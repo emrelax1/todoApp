@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="app.js"></script>
+    <title>To do App</title>
+  </head>
+  <body onload="allTask()">
+    <div class="container">
+      <div class="card">
+        <form id="form">
+          <input type="hidden" name="id" id="inputTaskId" />
+
+          <label for="inputTaskName">Name</label>
+          <input type="text" id="inputTaskName" />
+          <br />
+          <label for="inputTaskDescription">Description</label>
+          <input type="text" id="inputTaskDescription" />
+          <br />
+          <label for="inputTaskDeadLine">DeadLine</label>
+          <input type="text" id="inputTaskDeadLine" />
+          <br />
+          <button type="button" onclick="addTask()">Save Task</button>
+        </form>
+      </div>
+      <div class="card">
+        <div class="table-responsive">
+          <table id="datatable" class="table table-striped">
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>DeadLine</th>
+                <th>Creation Date</th>
+                <th>Firstly</th>
+                <th>Upcoming</th>
+              </tr>
+            </thead>
+            <tbody id="table">
+              <div id="myModal" class="modal">
+                <!-- Modal content -->
+                <div class="modal-content">
+                  <span class="close">×</span>
+                  <input type="hidden" name="id" id="inputTaskId" />
+
+                  <label for="updateName">Name</label>
+                  <input type="text" id="updateName" />
+                  <br />
+                  <label for="updateDescription">Description</label>
+                  <input type="text" id="updateDescription" />
+                  <br />
+                  <label for="updateDeadLine">DeadLine</label>
+                  <input type="text" id="updateDeadLine" />
+                  <br />
+                  <button type="button" onclick="addTask()">Save Task</button>
+                </div>
+              </div>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
