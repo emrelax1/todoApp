@@ -43,6 +43,26 @@ const todos = [
     firstly: "0",
     upcomming: "",
   },
+  {
+    id: 4,
+    category_id: 2,
+    name: "Projeyi Tamamla",
+    description: "projeye fonk ekle",
+    deadline: "17.09.2025",
+    creationdate: "25.10.2024",
+    firstly: "0",
+    upcomming: "",
+  },
+  {
+    id: 5,
+    category_id: 3,
+    name: "Çimleri Biç",
+    description: "çimleri biçeceğim",
+    deadline: "17.09.2025",
+    creationdate: "25.10.2024",
+    firstly: "0",
+    upcomming: "",
+  },
 ];
 
 localStorage.setItem("todos", JSON.stringify(todos));
@@ -52,55 +72,74 @@ localStorage.getItem("category");
 
 function allTask() {
   var table = document.getElementById("table");
+  var select = document.getElementById("inputTaskCategoryId");
   table.innerHTML = "";
-  taskList = JSON.parse(localStorage.getItem("todos")) ?? [];
-  taskList.forEach(function (value, i) {
-    table.innerHTML += `
+
+  categoryList = JSON.parse(localStorage.getItem("category")) ?? [];
+  categoryList.forEach(function (valuecategory) {
+    table.innerHTML += `<h2>${valuecategory.name}</h2>`;
+    select.innerHTML += `<option value="${valuecategory.id}">${valuecategory.name}</option>`;
+
+    taskList = JSON.parse(localStorage.getItem("todos")) ?? [];
+    taskList.forEach(function (value, i) {
+      if (value.category_id == valuecategory.id) {
+        table.innerHTML += `
+    
         <tr>
-        <td>${i + 1}</td>
-        
-        <td> 
-        <div class="parent-element">
-                
-            <input
-            type="text"
-            disabled="disable"
-            style="border: 0"
-            placeholder="${value.name}"
-            />
-            <div class="hidden-element">
-                <button>✏️
-                </button>
-            </div>
-        </div> 
-        </td>
-        
-                <td>
-                <div class="tooltip">${value.description}
-    <span class="tooltiptext">${value.description}</span>
-</div>
-    </td>
+  <!-- Sıra numarası -->
+  <td>${i + 1}</td>
 
+  <!-- İsim (yanında düzenleme butonu gizli) -->
+  <td>
+    <div class="parent-element">
+      <input
+        type="text"
+        disabled
+        style="border: 0; background: transparent;"
+        value="${value.name}"
+      />
+      <div class="hidden-element">
+        <button title="Düzenle">✏️</button>
+      </div>
+    </div>
+  </td>
 
-                <td>${value.deadline}</td>
-                <td>${value.creationdate}</td>
-                <td>${value.firstly}</td>
-                <td>${value.upcomming}</td>
-                <td>
-                <button onclick = "deleteTask(${value.id})">Sil
-                </button>
-                </td>
-                <td>
-                <button id= "${
-                  "updatePageBtn_" + value.id
-                }" onclick = "getUpdatePage(${value.id})">Güncelle
-                </button>
-                </td>
-                
-        </tr>
+  <!-- Açıklama (tooltip ile) -->
+  <td>
+    <div class="tooltip">
+      ${value.description}
+      <span class="tooltiptext">${value.description}</span>
+    </div>
+  </td>
+
+  <!-- Tarihler ve diğer alanlar -->
+  <td>${value.deadline}</td>
+  <td>${value.creationdate}</td>
+  <td>${value.firstly}</td>
+  <td>${value.upcomming}</td>
+
+  <!-- Sil Butonu -->
+  <td>
+    <button onclick="deleteTask(${value.id})">Sil</button>
+  </td>
+
+  <!-- Güncelle Butonu -->
+  <td>
+    <button
+      id="updatePageBtn_${value.id}"
+      onclick="getUpdatePage(${value.id})"
+    >
+      Güncelle
+    </button>
+  </td>
+</tr>
+
         `;
+      }
+    });
   });
 }
+
 function addTask() {
   taskList = JSON.parse(localStorage.getItem("todos")) ?? [];
   var id;
@@ -132,7 +171,7 @@ function addCategory() {
   categoryList.push(item);
   localStorage.setItem("category", JSON.stringify(categoryList));
   console.log(categoryList);
-  document.getElementById("category").reset();
+  allTask();
 }
 
 function deleteTask(id) {
