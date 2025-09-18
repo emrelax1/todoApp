@@ -7,6 +7,7 @@
     <script src="app.js"></script>
     <title>To do App</title>
   </head>
+
   <body onload="allTask()">
     <div class="container">
       <div class="card">
@@ -20,14 +21,14 @@
           <input type="text" id="inputTaskDescription" />
           <br />
           <label for="inputTaskDeadLine">DeadLine</label>
-          <input type="text" id="inputTaskDeadLine" />
+          <input type="text" id="inputTaskDeadLine" placeholder="" />
           <br />
           <button type="button" onclick="addTask()">Save Task</button>
         </form>
       </div>
       <div class="card">
         <div class="table-responsive">
-          <table id="datatable" class="table table-striped">
+          <table id="datatable" class="table table-striped" border="1">
             <thead>
               <tr>
                 <th>No</th>
@@ -42,25 +43,20 @@
             <tbody id="table">
               <div id="myModal" class="modal">
                 <!-- Modal content -->
-                <div class="modal-content">
-                  <span class="close">×</span>
-                  <input type="hidden" name="id" id="inputTaskId" />
-
-                  <label for="updateName">Name</label>
-                  <input type="text" id="updateName" />
-                  <br />
-                  <label for="updateDescription">Description</label>
-                  <input type="text" id="updateDescription" />
-                  <br />
-                  <label for="updateDeadLine">DeadLine</label>
-                  <input type="text" id="updateDeadLine" />
-                  <br />
-                  <button type="button" onclick="addTask()">Save Task</button>
-                </div>
+              </div>
+              <div id="descriptionModal" class="descriptionModal">
+                <!-- Modal content -->
               </div>
             </tbody>
           </table>
         </div>
+      </div>
+      <div class="card">
+        <form class="category">
+          <h3>Yeni Kategori Ekle</h3>
+          <input type="text" name="category_name" id="category_name" />
+          <button type="button" onclick="addCategory()">Ekle</button>
+        </form>
       </div>
     </div>
   </body>
