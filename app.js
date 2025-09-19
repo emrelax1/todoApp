@@ -84,14 +84,28 @@ function allTask() {
 
   categoryList = JSON.parse(localStorage.getItem("category")) ?? [];
   categoryList.forEach(function (valuecategory) {
-    table.innerHTML += `<h2>${valuecategory.name}</h2>`;
+    table.innerHTML += `<h2>${valuecategory.name}</h2>
+    <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Start Date</th>
+                    <th>DeadLine</th>
+                    <th>Creation Date</th>
+                    <th>Firstly</th>
+                    <th>Upcoming</th>
+                    <th>İşlemler</th>
+                  </tr>
+                </thead>`;
     select.innerHTML += `<option value="${valuecategory.id}">${valuecategory.name}</option>`;
     categorySelect.innerHTML += `<option value="${valuecategory.id}">${valuecategory.name}</option>`;
 
     taskList = JSON.parse(localStorage.getItem("todos")) ?? [];
+
     taskList.forEach(function (value, i) {
       if (value.category_id == valuecategory.id) {
         table.innerHTML += `
+        
     
         <tr>
   
@@ -128,18 +142,16 @@ function allTask() {
 
   <!-- Sil Butonu -->
   <td>
-    <button onclick="deleteTask(${value.id})">Sil</button>
-  </td>
-
-  <!-- Güncelle Butonu -->
-  <td>
-    <button
+    <button onclick="deleteTask(${value.id})">Sil</button><button
       id="updatePageBtn_${value.id}"
       onclick="getUpdatePage(${value.id})"
     >
       Güncelle
     </button>
   </td>
+
+  <!-- Güncelle Butonu -->
+  
 </tr>
 
         `;
@@ -154,9 +166,13 @@ function allCategory() {
   categoryList.forEach(function (value) {
     categoryTable.innerHTML += `
     
-    <tr>
-      <td>${value.name}</td>
-    </tr>
+    <button>
+        
+      ${value.name}
+      
+      
+      </button>
+      <br>
     `;
   });
 }
@@ -199,6 +215,7 @@ function addCategory() {
   categoryList.push(item);
   localStorage.setItem("category", JSON.stringify(categoryList));
   console.log(categoryList);
+  allCategory();
   allTask();
 }
 function deleteCategory(valuecategory) {
@@ -209,6 +226,7 @@ function deleteCategory(valuecategory) {
   });
   localStorage.setItem("category", JSON.stringify(categoryList));
   console.log(selectedCategoryId);
+  allCategory();
   allTask();
 }
 
@@ -268,6 +286,7 @@ function updateTask(id) {
   taskList = JSON.parse(localStorage.getItem("todos")) ?? [];
 
   let currentTask = taskList.find((e) => e.id == id);
+
   currentTask.name = updateName.value;
   currentTask.description = updateDescription.value;
   currentTask.deadline = updateDeadLine.value;

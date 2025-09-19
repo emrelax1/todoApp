@@ -15,7 +15,7 @@
           <input type="hidden" name="id" id="inputTaskId" />
 
           <label for="inputTaskName">Name</label>
-          <input type="text" id="inputTaskName" />
+          <input type="text" id="inputTaskName" placeholder="" />
           <br />
           <label for="inputTaskDescription">Description</label>
           <input type="text" id="inputTaskDescription" />
@@ -29,51 +29,52 @@
           <label for="inputTaskCategoryId">Kategori</label>
           <select name="inputTaskCategoryId" id="inputTaskCategoryId"></select>
           <br />
-          <button type="button" onclick="addTask()">Save Task</button>
+          <button type="button" value="emre" onclick="addTask()">
+            Save Task
+          </button>
         </form>
       </div>
-      <div class="card">
-        <div class="table-responsive">
-          <table id="datatable" class="table table-striped" border="1">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Start Date</th>
-                <th>DeadLine</th>
-                <th>Creation Date</th>
-                <th>Firstly</th>
-                <th>Upcoming</th>
-              </tr>
-            </thead>
-            <tbody id="table">
-              <div id="myModal" class="modal">
-                <!-- Modal content -->
+
+      <section>
+        <nav>
+          <div class="card">
+            <div class="table-responsive">
+              <table id="categorytable">
+                <thead>
+                  <h2>Kategoriler</h2>
+                </thead>
+                <tbody id="categoryTable"></tbody>
+              </table>
+              <div class="card">
+                <form class="category">
+                  <h3>Yeni Kategori Ekle</h3>
+                  <input type="text" name="category_name" id="category_name" />
+                  <button type="button" onclick="addCategory()">Ekle</button>
+                  <label for="categoryList">Kategori Sil</label>
+                  <select name="categoryList" id="categoryList"></select>
+                  <button type="button" onclick="deleteCategory()">Sil</button>
+                </form>
               </div>
-              <div id="descriptionModal" class="descriptionModal">
-                <!-- Modal content -->
-              </div>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div class="card">
-        <form class="category">
-          <h3>Yeni Kategori Ekle</h3>
-          <input type="text" name="category_name" id="category_name" />
-          <button type="button" onclick="addCategory()">Ekle</button>
-          <label for="categoryList">Kategori Sil</label>
-          <select name="categoryList" id="categoryList"></select>
-          <button type="button" onclick="deleteCategory()">Sil</button>
-        </form>
-      </div>
-      <div class="card">
-        <div class="table-responsive">
-          <table id="categorytable" border="1">
-            <tbody id="categoryTable"></tbody>
-          </table>
-        </div>
-      </div>
+            </div>
+          </div>
+        </nav>
+        <article>
+          <div class="card">
+            <div class="table-responsive">
+              <table id="datatable" class="table table-striped" border="1">
+                <tbody id="table">
+                  <div id="myModal" class="modal">
+                    <!-- Modal content -->
+                  </div>
+                  <div id="descriptionModal" class="descriptionModal">
+                    <!-- Modal content -->
+                  </div>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </article>
+      </section>
     </div>
   </body>
 </html>
