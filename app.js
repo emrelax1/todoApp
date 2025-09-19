@@ -11,6 +11,7 @@ const category = [
     id: 3,
     name: "Bahçe İşleri",
   },
+  {},
 ];
 const todos = [
   {
@@ -18,6 +19,7 @@ const todos = [
     category_id: 1,
     name: "Bulaşık",
     description: "bulaşıkları yıkayıp yerlerine kaldırmalıyım",
+    startdate: "01.11.2024",
     deadline: "17.09.2025",
     creationdate: "25.10.2024",
     firstly: "0",
@@ -28,6 +30,7 @@ const todos = [
     category_id: 1,
     name: "Temizlik",
     description: "Ev süpür paspas at",
+    startdate: "01.11.2024",
     deadline: "17.09.2025",
     creationdate: "25.10.2024",
     firstly: "0",
@@ -38,6 +41,7 @@ const todos = [
     category_id: 1,
     name: "Kıyafet",
     description: "kıyafetleri yıka ve ütüle",
+    startdate: "01.11.2024",
     deadline: "17.09.2025",
     creationdate: "25.10.2024",
     firstly: "0",
@@ -48,6 +52,7 @@ const todos = [
     category_id: 2,
     name: "Projeyi Tamamla",
     description: "projeye fonk ekle",
+    startdate: "01.11.2024",
     deadline: "17.09.2025",
     creationdate: "25.10.2024",
     firstly: "0",
@@ -58,6 +63,7 @@ const todos = [
     category_id: 3,
     name: "Çimleri Biç",
     description: "çimleri biçeceğim",
+    startdate: "01.11.2024",
     deadline: "17.09.2025",
     creationdate: "25.10.2024",
     firstly: "0",
@@ -65,20 +71,22 @@ const todos = [
   },
 ];
 
-localStorage.setItem("todos", JSON.stringify(todos));
 localStorage.getItem("todos");
-localStorage.setItem("category", JSON.stringify(category));
 localStorage.getItem("category");
 
 function allTask() {
   var table = document.getElementById("table");
   var select = document.getElementById("inputTaskCategoryId");
+  var categorySelect = document.getElementById("categoryList");
   table.innerHTML = "";
+  select.innerHTML = "";
+  categorySelect.innerHTML = "";
 
   categoryList = JSON.parse(localStorage.getItem("category")) ?? [];
   categoryList.forEach(function (valuecategory) {
     table.innerHTML += `<h2>${valuecategory.name}</h2>`;
     select.innerHTML += `<option value="${valuecategory.id}">${valuecategory.name}</option>`;
+    categorySelect.innerHTML += `<option value="${valuecategory.id}">${valuecategory.name}</option>`;
 
     taskList = JSON.parse(localStorage.getItem("todos")) ?? [];
     taskList.forEach(function (value, i) {
@@ -86,8 +94,7 @@ function allTask() {
         table.innerHTML += `
     
         <tr>
-  <!-- Sıra numarası -->
-  <td>${i + 1}</td>
+  
 
   <!-- İsim (yanında düzenleme butonu gizli) -->
   <td>
@@ -111,6 +118,7 @@ function allTask() {
       <span class="tooltiptext">${value.description}</span>
     </div>
   </td>
+  <td>${value.startdate}</td>
 
   <!-- Tarihler ve diğer alanlar -->
   <td>${value.deadline}</td>
@@ -139,6 +147,19 @@ function allTask() {
     });
   });
 }
+function allCategory() {
+  var categoryTable = document.getElementById("categoryTable");
+  categoryTable.innerHTML = "";
+  categoryList = JSON.parse(localStorage.getItem("category")) ?? [];
+  categoryList.forEach(function (value) {
+    categoryTable.innerHTML += `
+    
+    <tr>
+      <td>${value.name}</td>
+    </tr>
+    `;
+  });
+}
 
 function addTask() {
   taskList = JSON.parse(localStorage.getItem("todos")) ?? [];
@@ -150,6 +171,13 @@ function addTask() {
     name: document.getElementById("inputTaskName").value,
     description: document.getElementById("inputTaskDescription").value,
     deadline: document.getElementById("inputTaskDeadLine").value,
+    category_id: document.getElementById("inputTaskCategoryId").value,
+    startdate: document.getElementById("inputTaskStartDate").value,
+    creationdate: new Date().toLocaleDateString("tr-TR"),
+    firstly:
+      (innerHTML = `<input type="checkbox" id="firstlyCheck" name="firstlyCheck" value="firstly">`),
+
+    upcomming: "",
   };
   taskList.push(item);
 
@@ -171,6 +199,16 @@ function addCategory() {
   categoryList.push(item);
   localStorage.setItem("category", JSON.stringify(categoryList));
   console.log(categoryList);
+  allTask();
+}
+function deleteCategory(valuecategory) {
+  categoryList = JSON.parse(localStorage.getItem("category")) ?? [];
+  selectedCategoryId = document.getElementById("categoryList").value;
+  categoryList = categoryList.filter(function (valuecategory) {
+    return valuecategory.id != selectedCategoryId;
+  });
+  localStorage.setItem("category", JSON.stringify(categoryList));
+  console.log(selectedCategoryId);
   allTask();
 }
 
@@ -195,7 +233,7 @@ function getUpdatePage(id) {
   modal.style.display = "block";
   modal.innerHTML = `
             <div class="modal-content">
-                  <span class="close">×</span>
+                  
                   <input type="hidden" name="id" id="inputTaskId" />
 
                   <label for="updateName">Name</label>
@@ -214,9 +252,7 @@ function getUpdatePage(id) {
             `;
 
   // When the user clicks on <span> (x), close the modal
-  span.onclick = function () {
-    modal.style.display = "none";
-  };
+
   // When the user clicks anywhere outside of the modal, close it
   window.onclick = function (event) {
     if (event.target == modal) {
@@ -237,6 +273,7 @@ function updateTask(id) {
   currentTask.deadline = updateDeadLine.value;
 
   localStorage.setItem("todos", JSON.stringify(taskList));
-
+  var modal = document.getElementById("myModal");
+  modal.style.display = "none";
   allTask();
 }

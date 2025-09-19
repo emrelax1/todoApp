@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,7 +8,7 @@
     <title>To do App</title>
   </head>
 
-  <body onload="allTask()">
+  <body onload="allTask() , allCategory()">
     <div class="container">
       <div class="card">
         <form id="form">
@@ -20,15 +20,14 @@
           <label for="inputTaskDescription">Description</label>
           <input type="text" id="inputTaskDescription" />
           <br />
+          <label for="inputTaskStartDate">Start Date</label>
+          <input type="date" id="inputTaskStartDate" placeholder="" />
+          <br />
           <label for="inputTaskDeadLine">DeadLine</label>
-          <input type="text" id="inputTaskDeadLine" placeholder="" />
+          <input type="date" id="inputTaskDeadLine" placeholder="" />
           <br />
           <label for="inputTaskCategoryId">Kategori</label>
-          <select name="inputTaskCategoryId" id="inputTaskCategoryId">
-            <!-- <option value="1">Ev İşleri</option>
-            <option value="2">İş</option>
-            <option value="3">Kişisel</option> -->
-          </select>
+          <select name="inputTaskCategoryId" id="inputTaskCategoryId"></select>
           <br />
           <button type="button" onclick="addTask()">Save Task</button>
         </form>
@@ -38,9 +37,9 @@
           <table id="datatable" class="table table-striped" border="1">
             <thead>
               <tr>
-                <th>No</th>
                 <th>Name</th>
                 <th>Description</th>
+                <th>Start Date</th>
                 <th>DeadLine</th>
                 <th>Creation Date</th>
                 <th>Firstly</th>
@@ -63,7 +62,17 @@
           <h3>Yeni Kategori Ekle</h3>
           <input type="text" name="category_name" id="category_name" />
           <button type="button" onclick="addCategory()">Ekle</button>
+          <label for="categoryList">Kategori Sil</label>
+          <select name="categoryList" id="categoryList"></select>
+          <button type="button" onclick="deleteCategory()">Sil</button>
         </form>
+      </div>
+      <div class="card">
+        <div class="table-responsive">
+          <table id="categorytable" border="1">
+            <tbody id="categoryTable"></tbody>
+          </table>
+        </div>
       </div>
     </div>
   </body>
