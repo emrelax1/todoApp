@@ -73,26 +73,17 @@ const todos = [
 
 localStorage.getItem("todos");
 localStorage.getItem("category");
-function getFirstİtem() {
-  let category = JSON.parse(localStorage.getItem("category")) ?? [];
-  const firstİtem = category[0];
-  getCategoryTodos(firstİtem.id);
-}
 
 function getCategoryTodos(category_id) {
   taskList = JSON.parse(localStorage.getItem("todos")) ?? [];
-  let category = JSON.parse(localStorage.getItem("category")) ?? [];
   var table = document.getElementById("table");
-
   table.innerHTML = ``;
-
   const taskListFiltered = taskList.filter((x) => x.category_id == category_id);
 
   const selected_category = category.find((e) => e.id == category_id);
-
   taskListFiltered.forEach(function (valuecategory) {
     table.innerHTML = `
-    <h2>${selected_category.name}</h2>
+    <h2>${category_id.name}</h2>
     <thead>
                   <tr>
                     <th>Name</th>
@@ -115,7 +106,15 @@ function getCategoryTodos(category_id) {
 function allTask(taskList) {
   var table = document.getElementById("table");
 
-  taskList?.forEach((value) => {
+  var select = document.getElementById("inputTaskCategoryId");
+  var categorySelect = document.getElementById("categoryList");
+
+  select.innerHTML = "";
+
+  /*   select.innerHTML += `<option value="${valuecategory.id}">${valuecategory.name}</option>`;
+  categorySelect.innerHTML += `<option value="${valuecategory.id}">${valuecategory.name}</option>`;
+ */
+  taskList.forEach((value) => {
     table.innerHTML += `
         
     
@@ -173,13 +172,7 @@ function allTask(taskList) {
 function allCategory() {
   var categoryTable = document.getElementById("categoryTable");
   categoryTable.innerHTML = "";
-
   categoryList = JSON.parse(localStorage.getItem("category")) ?? [];
-  var select = document.getElementById("inputTaskCategoryId");
-  var categorySelect = document.getElementById("categoryList");
-  select.innerHTML = "";
-  categorySelect.innerHTML = "";
-
   categoryList.forEach(function (value) {
     categoryTable.innerHTML += `
     
@@ -191,8 +184,6 @@ function allCategory() {
       </button>
       <br>
     `;
-    select.innerHTML += `<option value="${value.id}">${value.name}</option>`;
-    categorySelect.innerHTML += `<option value="${value.id}">${value.name}</option>`;
   });
 }
 
@@ -218,9 +209,8 @@ function addTask() {
 
   localStorage.setItem("todos", JSON.stringify(taskList));
   console.log(taskList);
-
+  allTask();
   document.getElementById("form").reset();
-  getCategoryTodos(item.category_id);
 }
 function addCategory() {
   categoryList = JSON.parse(localStorage.getItem("category")) ?? [];
@@ -237,7 +227,6 @@ function addCategory() {
   console.log(categoryList);
   allCategory();
   allTask();
-  document.getElementById("category").reset();
 }
 function deleteCategory(valuecategory) {
   categoryList = JSON.parse(localStorage.getItem("category")) ?? [];
@@ -253,14 +242,11 @@ function deleteCategory(valuecategory) {
 
 function deleteTask(id) {
   taskList = JSON.parse(localStorage.getItem("todos")) ?? [];
-  taskCAtegory = taskList.find((x) => x.id == id).category_id;
-  console.log(taskCAtegory);
-
   taskList = taskList.filter(function (value) {
     return value.id != id;
   });
   localStorage.setItem("todos", JSON.stringify(taskList));
-  getCategoryTodos(taskCAtegory);
+  allTask();
 }
 
 function getUpdatePage(id) {
@@ -318,5 +304,5 @@ function updateTask(id) {
   localStorage.setItem("todos", JSON.stringify(taskList));
   var modal = document.getElementById("myModal");
   modal.style.display = "none";
-  getCategoryTodos(currentTask.category_id);
+  allTask();
 }

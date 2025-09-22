@@ -4,11 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
-    <script src="app.js"></script>
     <title>To do App</title>
   </head>
 
-  <body onload="allTask() , allCategory()">
+  <body onload="allCategory(),getFirstİtem()">
     <div class="container">
       <div class="card">
         <form id="form">
@@ -27,7 +26,12 @@
           <input type="date" id="inputTaskDeadLine" placeholder="" />
           <br />
           <label for="inputTaskCategoryId">Kategori</label>
-          <select name="inputTaskCategoryId" id="inputTaskCategoryId"></select>
+          <select
+            name="
+          
+          "
+            id="inputTaskCategoryId"
+          ></select>
           <br />
           <button type="button" value="emre" onclick="addTask()">
             Save Task
@@ -46,7 +50,7 @@
                 <tbody id="categoryTable"></tbody>
               </table>
               <div class="card">
-                <form class="category">
+                <form class="category" id="category">
                   <h3>Yeni Kategori Ekle</h3>
                   <input type="text" name="category_name" id="category_name" />
                   <button type="button" onclick="addCategory()">Ekle</button>
@@ -77,4 +81,5 @@
       </section>
     </div>
   </body>
+  <script src="app.js"></script>
 </html>
