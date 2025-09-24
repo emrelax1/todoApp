@@ -7,35 +7,17 @@
     <title>To do App</title>
   </head>
 
-  <body onload="allCategory(),getFirstİtem()">
+  <body onload="allCategory(),getFirstİtem(),completedTaskPushLast()">
     <div class="container">
       <div class="card">
         <form id="form">
-          <input type="hidden" name="id" id="inputTaskId" />
-
-          <label for="inputTaskName">Name</label>
-          <input type="text" id="inputTaskName" placeholder="" />
-          <br />
-          <label for="inputTaskDescription">Description</label>
-          <input type="text" id="inputTaskDescription" />
-          <br />
-          <label for="inputTaskStartDate">Start Date</label>
-          <input type="date" id="inputTaskStartDate" placeholder="" />
-          <br />
-          <label for="inputTaskDeadLine">DeadLine</label>
-          <input type="date" id="inputTaskDeadLine" placeholder="" />
-          <br />
-          <label for="inputTaskCategoryId">Kategori</label>
           <select
+            style="display: none"
             name="
           
           "
             id="inputTaskCategoryId"
           ></select>
-          <br />
-          <button type="button" value="emre" onclick="addTask()">
-            Save Task
-          </button>
         </form>
       </div>
 
@@ -47,16 +29,22 @@
                 <thead>
                   <h2>Kategoriler</h2>
                 </thead>
-                <tbody id="categoryTable"></tbody>
+                <tbody id="categoryTable">
+                  <button id="addCategoryPage" onclick="getAddCategoryPage()">
+                    +
+                  </button>
+                  <div id="myModal" class="modal">
+                    <!-- Modal content -->
+                  </div>
+                </tbody>
               </table>
               <div class="card">
                 <form class="category" id="category">
-                  <h3>Yeni Kategori Ekle</h3>
-                  <input type="text" name="category_name" id="category_name" />
-                  <button type="button" onclick="addCategory()">Ekle</button>
-                  <label for="categoryList">Kategori Sil</label>
-                  <select name="categoryList" id="categoryList"></select>
-                  <button type="button" onclick="deleteCategory()">Sil</button>
+                  <select
+                    name="categoryList"
+                    style="display: none"
+                    id="categoryList"
+                  ></select>
                 </form>
               </div>
             </div>

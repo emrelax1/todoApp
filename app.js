@@ -70,7 +70,8 @@ const todos = [
     upcomming: "",
   },
 ];
-
+const selectedCategory = [];
+localStorage.getItem("selectedCategory");
 localStorage.getItem("todos");
 localStorage.getItem("category");
 function getFirstİtem() {
@@ -84,15 +85,8 @@ function getCategoryTodos(category_id) {
   let category = JSON.parse(localStorage.getItem("category")) ?? [];
   var table = document.getElementById("table");
 
-  table.innerHTML = ``;
-
-  const taskListFiltered = taskList.filter((x) => x.category_id == category_id);
-
-  const selected_category = category.find((e) => e.id == category_id);
-
-  taskListFiltered.forEach(function (valuecategory) {
-    table.innerHTML = `
-    <h2>${selected_category.name}</h2>
+  table.innerHTML = `
+    <h2>${category.find((e) => e.id == category_id).name}</h2>
     <thead>
                   <tr>
                     <th>Name</th>
@@ -105,7 +99,37 @@ function getCategoryTodos(category_id) {
                     <th>İşlemler</th>
                   </tr>
                 </thead>
+                <tr>
+        <button id="addTaskPage" onclick="getAddQuickTaskPage(${category_id})"> ➕ Görev Ekle</button>
 
+        </tr>
+
+  `;
+
+  const taskListFiltered = taskList.filter((x) => x.category_id == category_id);
+
+  const selected_category = category.find((e) => e.id == category_id);
+
+  taskListFiltered.forEach(function (valuecategory) {
+    table.innerHTML = `
+    <h2>${selected_category.name}</h2>
+    <thead>
+                  <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Start Date</th>
+                    <th>DeadLine</th>
+                    <th>Creation Date</th>
+                    <th>Firstly</th>
+                    <th>Upcoming</th>
+                    <th>İşlemler</th>
+                  </tr>
+                </thead>
+    <tr>
+        <button id="addTaskPage" onclick="getAddQuickTaskPage(${category_id})"> ➕ Görev Ekle</button>
+
+        </tr>
     `;
   });
 
@@ -121,9 +145,16 @@ function allTask(taskList) {
     
         <tr>
   
+  <td data-label= "isCompleted">
+  <input type="checkbox" id="isCompleted_${
+    value.id
+  }" name="isCompleted" onchange ="isCompletedTask(${value.id})" ${
+      value.isCompleted && "checked"
+    }>
+  </td>
 
   <!-- İsim (yanında düzenleme butonu gizli) -->
-  <td>
+  <td data-label= "updateName">
     <div class="parent-element">
       <input
         type="text"
@@ -138,22 +169,22 @@ function allTask(taskList) {
   </td>
 
   <!-- Açıklama (tooltip ile) -->
-  <td>
+  <td data-label= "description">
     <div class="tooltip">
       ${value.description}
       <span class="tooltiptext">${value.description}</span>
     </div>
   </td>
-  <td>${value.startdate}</td>
+  <td data-label= "startDate">${value.startdate}</td>
 
   <!-- Tarihler ve diğer alanlar -->
-  <td>${value.deadline}</td>
-  <td>${value.creationdate}</td>
-  <td>${value.firstly}</td>
-  <td>${value.upcomming}</td>
+  <td data-label= "deadline" >${value.deadline}</td>
+  <td data-label= "CreatinDate">${value.creationdate}</td>
+  <td data-label= "firstly">${value.firstly}</td>
+  <td data-label= "upComing">${value.upcomming}</td>
 
   <!-- Sil Butonu -->
-  <td>
+  <td data-label= "delete">
     <button onclick="deleteTask(${value.id})">Sil</button><button
       id="updatePageBtn_${value.id}"
       onclick="getUpdatePage(${value.id})"
@@ -172,7 +203,7 @@ function allTask(taskList) {
 
 function allCategory() {
   var categoryTable = document.getElementById("categoryTable");
-  categoryTable.innerHTML = "";
+  categoryTable.innerHTML = ``;
 
   categoryList = JSON.parse(localStorage.getItem("category")) ?? [];
   var select = document.getElementById("inputTaskCategoryId");
@@ -188,6 +219,11 @@ function allCategory() {
       ${value.name}
       
       
+      </button><button id = "categoryBtnDelete_${value.id}" value = "${value.id}" class ="categoryBtn" onclick = "deleteCategory(${value.id})">
+        
+      ❌
+      
+      
       </button>
       <br>
     `;
@@ -195,18 +231,48 @@ function allCategory() {
     categorySelect.innerHTML += `<option value="${value.id}">${value.name}</option>`;
   });
 }
+function isCompletedTask(id) {
+  taskList = JSON.parse(localStorage.getItem("todos")) ?? [];
+  checkBox = document.getElementById("isCompleted_" + id);
+  console.log(checkBox);
 
-function addTask() {
+  let currentTask = taskList.find((e) => e.id == id);
+  let currentTaskIndex = taskList.indexOf(currentTask);
+  console.log(currentTask);
+  currentTask.isCompleted = checkBox.checked;
+
+  localStorage.setItem("todos", JSON.stringify(taskList));
+  console.log(currentTask);
+  completedTaskPushLast(id);
+  allTask();
+}
+function completedTaskPushLast(id) {
+  taskList = JSON.parse(localStorage.getItem("todos")) ?? [];
+  let index = taskList.findIndex((e) => e.id == id);
+  let currentTask = taskList.splice(index, 1)[0];
+  deleteTask(currentTask.id);
+  if (currentTask.isCompleted) {
+    taskList.push(currentTask);
+    console.log("ife girdi", currentTask);
+  } else {
+    taskList.unshift(currentTask);
+  }
+  localStorage.setItem("todos", JSON.stringify(taskList));
+  allTask();
+}
+
+function addTask(value) {
   taskList = JSON.parse(localStorage.getItem("todos")) ?? [];
   var id;
   taskList.length != 0 ? taskList.findLast((item) => (id = item.id)) : (id = 0);
 
   var item = {
     id: id + 1,
+    isCompleted: false,
     name: document.getElementById("inputTaskName").value,
     description: document.getElementById("inputTaskDescription").value,
     deadline: document.getElementById("inputTaskDeadLine").value,
-    category_id: document.getElementById("inputTaskCategoryId").value,
+    category_id: value,
     startdate: document.getElementById("inputTaskStartDate").value,
     creationdate: new Date().toLocaleDateString("tr-TR"),
     firstly:
@@ -241,7 +307,9 @@ function addCategory() {
 }
 function deleteCategory(valuecategory) {
   categoryList = JSON.parse(localStorage.getItem("category")) ?? [];
-  selectedCategoryId = document.getElementById("categoryList").value;
+  selectedCategoryId = document.getElementById(
+    "categoryBtnDelete_" + valuecategory
+  ).value;
   categoryList = categoryList.filter(function (valuecategory) {
     return valuecategory.id != selectedCategoryId;
   });
@@ -302,7 +370,85 @@ function getUpdatePage(id) {
     }
   };
 }
+function getAddCategoryPage() {
+  console.log("çağrıldım");
 
+  var modal = document.getElementById("myModal");
+  var btn = document.getElementById("addCategoryPage");
+  console.log(btn);
+
+  modal.style.display = "block";
+  modal.innerHTML = `
+            <div class="modal-content">
+                  
+                  <div class="card">
+                <form class="category" id="category">
+                  <h3>Yeni Kategori Ekle</h3>
+                  <input type="text" name="category_name" id="category_name" />
+                  <button type="button" onclick="addCategory()">Ekle</button>
+                  <label for="categoryList">Kategori Sil</label>
+                  <select name="categoryList" id="categoryList"></select>
+                  <button type="button" onclick="deleteCategory()">Sil</button>
+                </form>
+              </div>
+            </div>
+            `;
+
+  // When the user clicks on <span> (x), close the modal
+
+  // When the user clicks anywhere outside of the modal, close it
+  window.onclick = function (event) {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  };
+}
+function getAddQuickTaskPage(value) {
+  console.log("çağrıldım");
+
+  var modal = document.getElementById("myModal");
+  var btn = document.getElementById("addTaskPage");
+  console.log(btn);
+
+  modal.style.display = "block";
+  modal.innerHTML = `
+            <div class="modal-content">
+                  
+                  <div class="card">
+        <form id="form">
+          <input type="hidden" name="id" id="inputTaskId" />
+
+          <label for="inputTaskName">Name</label>
+          <input type="text" id="inputTaskName" placeholder="" />
+          <br />
+          <label for="inputTaskDescription">Description</label>
+          <input type="text" id="inputTaskDescription" />
+          <br />
+          <label for="inputTaskStartDate">Start Date</label>
+          <input type="date" id="inputTaskStartDate" placeholder="" />
+          <br />
+          <label for="inputTaskDeadLine">DeadLine</label>
+          <input type="date" id="inputTaskDeadLine" placeholder="" />
+          <br />
+          
+          
+          <button type="button" value="emre" onclick="addTask(${value})">
+            Save Task
+          </button>
+        </form>
+      </div>
+            </div>
+            `;
+
+  // When the user clicks on <span> (x), close the modal
+
+  // When the user clicks anywhere outside of the modal, close it
+  window.onclick = function (event) {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  };
+}
 function updateTask(id) {
   var updateName = document.getElementById("updateName");
   var updateDescription = document.getElementById("updateDescription");
