@@ -18,6 +18,8 @@ const todos = [
     id: 1,
     category_id: 1,
     name: "Bulaşık",
+    isCompleted: false,
+
     description: "bulaşıkları yıkayıp yerlerine kaldırmalıyım",
     startdate: "01.11.2024",
     deadline: "17.09.2025",
@@ -29,6 +31,8 @@ const todos = [
     id: 2,
     category_id: 1,
     name: "Temizlik",
+    isCompleted: false,
+
     description: "Ev süpür paspas at",
     startdate: "01.11.2024",
     deadline: "17.09.2025",
@@ -40,6 +44,8 @@ const todos = [
     id: 3,
     category_id: 1,
     name: "Kıyafet",
+    isCompleted: false,
+
     description: "kıyafetleri yıka ve ütüle",
     startdate: "01.11.2024",
     deadline: "17.09.2025",
@@ -50,6 +56,8 @@ const todos = [
   {
     id: 4,
     category_id: 2,
+    isCompleted: false,
+
     name: "Projeyi Tamamla",
     description: "projeye fonk ekle",
     startdate: "01.11.2024",
@@ -62,6 +70,7 @@ const todos = [
     id: 5,
     category_id: 3,
     name: "Çimleri Biç",
+    isCompleted: false,
     description: "çimleri biçeceğim",
     startdate: "01.11.2024",
     deadline: "17.09.2025",
@@ -113,6 +122,14 @@ function getCategoryTodos(category_id) {
   taskListFiltered.forEach(function (valuecategory) {
     table.innerHTML = `
     <h2>${selected_category.name}</h2>
+    <select id ="filterSelect" onchange= "filterTodos()">
+                    <option value="noCompleted">Tamamlanmamış</option>
+                    <option value="completed">Tamamlanmış</option>
+                    <option value="a-z">A-Z</option>
+                    <option value="z-a">Z-A</option>
+                    <option value="near">Tarihe Göre(Yakından - Uzağa)</option>
+                    <option value="far">Tarihe Göre(Uzaktan - Yakına)</option>
+    </select>
     <thead>
                   <tr>
                     <th></th>
@@ -132,7 +149,7 @@ function getCategoryTodos(category_id) {
         </tr>
     `;
   });
-
+  console.log(taskListFiltered);
   allTask(taskListFiltered);
 }
 
@@ -143,14 +160,14 @@ function allTask(taskList) {
     table.innerHTML += `
         
     
-        <tr>
+        <tr id ="${value.id}">
   
   <td data-label= "isCompleted">
   <input type="checkbox" id="isCompleted_${
     value.id
-  }" name="isCompleted" onchange ="isCompletedTask(${value.id})" ${
-      value.isCompleted && "checked"
-    }>
+  }" name="isCompleted" onchange ="isCompletedTask(${
+      value.id
+    }),allCategory()" ${value.isCompleted && "checked"}>
   </td>
 
   <!-- İsim (yanında düzenleme butonu gizli) -->
@@ -170,10 +187,10 @@ function allTask(taskList) {
 
   <!-- Açıklama (tooltip ile) -->
   <td data-label= "description">
-    <div class="tooltip">
+    
       ${value.description}
-      <span class="tooltiptext">${value.description}</span>
-    </div>
+      
+    
   </td>
   <td data-label= "startDate">${value.startdate}</td>
 
@@ -243,22 +260,50 @@ function isCompletedTask(id) {
 
   localStorage.setItem("todos", JSON.stringify(taskList));
   console.log(currentTask);
-  completedTaskPushLast(id);
-  allTask();
+  filterTodos();
 }
-function completedTaskPushLast(id) {
-  taskList = JSON.parse(localStorage.getItem("todos")) ?? [];
-  let index = taskList.findIndex((e) => e.id == id);
-  let currentTask = taskList.splice(index, 1)[0];
-  deleteTask(currentTask.id);
-  if (currentTask.isCompleted) {
-    taskList.push(currentTask);
-    console.log("ife girdi", currentTask);
-  } else {
-    taskList.unshift(currentTask);
+function filterTodos() {
+  const filterType = document.getElementById("filterSelect").value;
+  let todos = JSON.parse(localStorage.getItem("todos")) || [];
+  const table = document.getElementById("table");
+  const items = Array.from(table.children);
+  const tdWithId = items.filter(
+    (item) => item.tagName === "TR" && item.hasAttribute("id")
+  );
+  console.log(tdWithId);
+
+  const sortedItems = tdWithId.sort((a, b) =>
+    a.textContent.localeCompare(b.textContent)
+  );
+
+  /* if (filterType === "all") {
+    allTask();
+  } 
+  } else if (filterType === "completed") {
+    todos = todos.filter((t) => t.isCompleted);
+  } */ if (filterType === "a-z") {
+    const sortedItems = [...tdWithId].sort((a, b) =>
+      a.textContent.localeCompare(b.textContent)
+    );
+
+    sortedItems.forEach((item) => table.appendChild(item));
+  } else if (filterType === "z-a") {
+    const sortedItems = [...tdWithId].sort((a, b) =>
+      b.textContent.localeCompare(a.textContent)
+    );
+
+    sortedItems.forEach((item) => table.appendChild(item));
+  } else if (filterType === "near") {
+    const sortedItems = [...tdWithId].sort(
+      (a, b) => new Date(toString(a.deadline)) - new Date(b.deadline)
+    );
+    sortedItems.forEach((item) => table.appendChild(item));
+  } else if (filterType === "far") {
+    const sortedItems = [...tdWithId].sort(
+      (a, b) => new Date(toString(a.deadline)) - new Date(b.deadline)
+    );
+    sortedItems.reverse().forEach((item) => table.appendChild(item));
   }
-  localStorage.setItem("todos", JSON.stringify(taskList));
-  allTask();
 }
 
 function addTask(value) {
@@ -385,10 +430,8 @@ function getAddCategoryPage() {
                 <form class="category" id="category">
                   <h3>Yeni Kategori Ekle</h3>
                   <input type="text" name="category_name" id="category_name" />
-                  <button type="button" onclick="addCategory()">Ekle</button>
-                  <label for="categoryList">Kategori Sil</label>
-                  <select name="categoryList" id="categoryList"></select>
-                  <button type="button" onclick="deleteCategory()">Sil</button>
+                  <button type="button" id="addBtn" onclick="addCategory()">Ekle</button>
+                  
                 </form>
               </div>
             </div>
